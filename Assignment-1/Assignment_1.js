@@ -17,7 +17,7 @@ async function logResponseToFile(response,fileName) {
 async function getDataFromAllPages() {
   try {
     let pageNumber=1;
-    let allBreeds = {};
+    let breedGroupByCountry = {};
     let allData=[];
 
     while (true) {
@@ -32,10 +32,10 @@ async function getDataFromAllPages() {
 
       breeds.forEach(breed => {
         const origin = breed.country;
-        if (!allBreeds[origin]) {
-          allBreeds[origin] = [];
+        if (!breedGroupByCountry[origin]) {
+          breedGroupByCountry[origin] = [];
         }
-        allBreeds[origin].push({
+        breedGroupByCountry[origin].push({
           breed: breed.breed,
           origin: breed.origin,
           coat: breed.coat,
@@ -46,7 +46,7 @@ async function getDataFromAllPages() {
       pageNumber++;
     }
 
-    return {pageNumber,allData,allBreeds};
+    return {pageNumber,allData,breedGroupByCountry};
 } 
   catch (error) {
     throw new Error(`Error fetching data: ${error.message}`);
@@ -54,11 +54,10 @@ async function getDataFromAllPages() {
 }
 
 
-// Main function to perform the tasks
 async function main() {
   try {
     
-    let {pageNumber,allData,allBreeds}=await getDataFromAllPages();
+    let {pageNumber,allData,breedGroupByCountry}=await getDataFromAllPages();
 
     // Task 2: Console log the number of pages of data
     console.log('Total Page Number',pageNumber);
@@ -68,14 +67,13 @@ async function main() {
     console.log('All data:',allData);
     await logResponseToFile(allData,'allData.txt');
 
-    // Task 4a: Return cat breeds grouped by Country in the desired format
-    console.log('All breed data:',allBreeds);
-    await logResponseToFile(allBreeds,'allBread.txt');
+    // Task 4a: Return cat breeds grouped by Country 
+    console.log('All breed data:',breedGroupByCountry);
+    await logResponseToFile(breedGroupByCountry,'breedGroupByCountry.txt');
 
   } catch (error) {
     console.error(error.message);
   }
 }
 
-// Run the main function
 main();
